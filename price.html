@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cost Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Robograd Price Calculator</h1>
+        <div class="form-group">
+            <label for="program">Program Type:</label>
+            <select id="program">
+                <option value="30">30 Sessions</option>
+                <option value="60">60 Sessions</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="students">Number of Students:</label>
+            <input type="number" id="students" placeholder="Enter number of students">
+        </div>
+        <button onclick="calculate()">Calculate</button>
+        <div class="results" id="results"></div>
+    </div>
+
+    <script>
+        function calculate() {
+            const program = document.getElementById('program').value;
+            const students = parseInt(document.getElementById('students').value);
+            if (isNaN(students) || students <= 0) {
+                alert("Please enter a valid number of students.");
+                return;
+            }
+
+            const mentorSalary = 400000;
+            let mentorCapacity, kitCost;
+
+            if (program === '30') {
+                mentorCapacity = 1000; // 1 mentor can manage 1000 students for 30 sessions
+                kitCost = 800;
+            } else if (program === '60') {
+                mentorCapacity = 500; // 1 mentor can manage 500 students for 60 sessions
+                kitCost = 1200;
+            }
+
+            const numMentors = Math.ceil(students / mentorCapacity);
+            const backupMentors = Math.floor(numMentors / 3); // 1 backup mentor for every 3 mentors
+            const totalMentors = numMentors + backupMentors;
+
+            const totalMentorSalary = mentorSalary * totalMentors;
+            const mentorCostPerStudent = totalMentorSalary / students;
+
+            let costPricePerStudent = mentorCostPerStudent + kitCost + 1300;
+            costPricePerStudent = Math.ceil(costPricePerStudent / 10) * 10; // Round up to the next 10
+
+            const sellingPricePerStudent = Math.ceil((costPricePerStudent / 0.75) / 10) * 10; // Adjust for 25% discount and round up to the next 10
+
+            document.getElementById('results').innerHTML = `
+                <p><strong>Number of Mentors:</strong> ${numMentors}</p>
+                <p><strong>Backup Mentors:</strong> ${backupMentors}</p>
+                <p><strong>Total Mentors:</strong> ${totalMentors}</p>
+                <p><strong>Cost Price per Student:</strong> ₹${costPricePerStudent.toFixed(2)}</p>
+                <p><strong>Selling Price per Student:</strong> ₹${sellingPricePerStudent.toFixed(2)}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
+
+
+
